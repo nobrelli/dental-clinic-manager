@@ -1,0 +1,377 @@
+{% extends 'dashboard/_base.html' %}
+
+{% block contents %}
+	<section id="appointments-today" class="mb-5">
+		<h3>Appointments for today 
+			{%- if appointments_today_count > 0 -%}
+				({{ appointments_today_count }})
+			{%- endif -%}
+		</h3>
+		{% if appointments_today_count == 0 %}
+			<hr>
+			<p class="text-center fw-normal">No appointments for today</p>
+			<hr>
+		{% else %}
+			<table class="table table-hover">
+				<thead>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Reason</th>
+					<th>Time</th>
+				</thead>
+				<tbody>
+					{% for item in appointment_list_today %}
+						<tr style="cursor: pointer"
+							onclick="window.location.href = '{{ url_for('dashboard.view_patient', id=item.unique_id) }}'">
+							<td>{{ item.full_name }}</td>
+							<td>{{ item.address or '-' }}</td>
+							<td>
+								{{ item.remarks | truncate(12) or '-' }}
+							</td>
+							<td>
+								{{ moment(item.schedule_time, local=True).format('h:mm A') if item.schedule_time else 'Unspecified' }}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% endif %}
+	</section>
+	<section id="appointments-tomorrow" class="mb-5">
+		<h3>Appointments for tomorrow 
+			{% if appointments_tomorrow_count > 0 -%}
+				({{ appointments_tomorrow_count }})
+			{%- endif -%}
+		</h3>
+		{% if appointments_tomorrow_count == 0 %}
+			<hr>
+			<p class="text-center fw-normal">No appointments for tomorrow</p>
+			<hr>
+		{% else %}
+			<table class="table table-hover">
+				<thead>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Reason</th>
+					<th>Time</th>
+				</thead>
+				<tbody>
+					{% for item in appointment_list_tomorrow %}
+						<tr style="cursor: pointer"
+							onclick="window.location.href = '{{ url_for('dashboard.view_patient', id=item.unique_id) }}'">
+							<td>{{ item.full_name }}</td>
+							<td>{{ item.address or '-' }}</td>
+							<td>
+								{{ item.remarks | truncate(12) or '-' }}
+							</td>
+							<td>
+								{{ moment(item.schedule_time, local=True).format('h:mm A') if item.schedule_time else 'Unspecified' }}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% endif %}
+	</section>
+	<section id="stats">
+		<div class="row" data-masonry='{"percentPosition": true }'>
+			<div class="col-md-4">
+				<div class="card text-bg-light mb-3">
+					<div class="card-header">Patients</div>
+					<div class="card-body">
+						<h5 class="card-title">
+							{% if patient_count == 0 %}
+								No records
+							{% else %}
+								{{ patient_count }}
+								record{{ patient_count | pluralize('', 's') }}
+							{% endif %}
+						</h5>
+						<p class="card-text text-muted">
+							{% if last_insert %}
+								Last insert since {{ moment(last_insert).format('MMM D YYYY, h:mm A') }}
+							{% endif %}
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card text-bg-light mb-3">
+					<div class="card-header">Medications</div>
+					<div class="card-body">
+						<h5 class="card-title">
+							{% if medicine_count == 0 %}
+								No items
+							{% else %}
+								{{ medicine_count }}
+								item{{ medicine_count | pluralize('', 's') }}
+							{% endif %}
+						</h5>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card text-bg-light mb-3">
+					<div class="card-header">Inventory</div>
+					<div class="card-body">
+						<h5 class="card-title">
+							{% if product_count == 0 %}
+								No items
+							{% else %}
+								{{ product_count }}
+								item{{ product_count | pluralize('', 's') }}
+							{% endif %}
+						</h5>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<button id="shortcuts-toggler" 
+			type="button" 
+			class="btn btn-primary"
+			data-bs-toggle="offcanvas" 
+			data-bs-target="#shortcuts">Shortcuts</button>
+	<div class="offcanvas offcanvas-bottom" tabindex="-1" id="shortcuts">
+		<div class="offcanvas-header">
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="offcanvas-body">
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qr-scanner">Scan bill</button>
+			<a href="{{ url_for('dashboard.view_patients') }}" class="btn btn-primary">Records</a>
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#scheduler">Schedule</button>
+		</div>
+	</div>
+	
+	<!-- modals -->
+	<div class="modal fade" 
+		id="qr-scanner" 
+		tabindex="-1"
+		data-bs-backdrop="static"
+		data-bs-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header justify-content-between">
+					<h4 class="mb-0 scheduler-heading">Scan</h4>
+					<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body with-spinner">
+					<div class="spinner-wrapper">
+						<div class="spinner-overlay">
+							<div class="spinner-border" role="status"></div>
+						</div>
+					</div>
+					<div class="text-center">
+						<p id="qr-reader-status"></p>
+						<a id="record-link"></a>
+						<button type="button" class="btn btn-primary mb-2" id="qr-scan-again" style="display: none">Scan again</button>
+					</div>
+					<div id="qr-reader"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" id="save-appointment-btn" disabled>Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" 
+		id="scheduler" 
+		tabindex="-1"
+		data-bs-backdrop="static"
+		data-bs-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header justify-content-between">
+					<h4 class="mb-0 scheduler-heading">Schedule Appointment</h4>
+					<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<form method="post"
+					class="modal-body needs-validation with-spinner scheduler--form" 
+					id="schedule-form"
+					autocomplete="off">
+					<div class="spinner-wrapper">
+						<div class="spinner-overlay">
+							<div class="spinner-border" role="status"></div>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col">
+							<select class="form-select scheduler--type-selector" name="patient_type" id="patient-type">
+								<option value="existing">Existing patient</option>
+								<option value="new">New patient</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mb-3 scheduler--existing-field">
+						<div class="col">
+							<div class="results-wrapper">
+								<label class="form-label">Patient name</label>
+								<input class="form-control" type="text" id="full_name" placeholder="Search">
+								<input type="hidden" name="patient_id">
+								<ul id="search-results" class="hidden"></ul>
+							</div>
+						</div>
+					</div>
+					<div class="row mb-3 scheduler--new-field hidden">
+						<div class="col">
+							<label class="form-label">First name</label>
+							<input class="form-control cappy" type="text" name="first_name">
+						</div>
+						<div class="col">
+							<label class="form-label">Last name</label>
+							<input class="form-control cappy" type="text" name="last_name">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md mb-2">
+							<input class="flatpickr flatpickr-input form-control scheduler--date" 
+								id="appointment-date" 
+								type="date" 
+								placeholder="Pick a date" 
+								readonly
+								name="appointment_date">
+						</div>
+						<div class="col-md mb-2 d-flex align-items-center">
+							<button type="button" class="btn btn-primary btn-sm scheduler--time-toggle" id="specify-time">Specify time</button>
+							<input class="flatpickr flatpickr-input form-control me-1 scheduler--time" 
+								id="appointment-time" 
+								type="text" 
+								placeholder="Select time" 
+								readonly
+								name="appointment_time">
+							<button type="button" class="ml-2 mb-1 btn-close scheduler--time-close" id="unspecify-time"></button>
+						</div>
+					</div>
+					<div class="row mt-1">
+						<div class="col">
+							<div class="form-floating">
+								<textarea class="form-control scheduler--notes" name="remarks" placeholder="Remarks" id="remarks"></textarea>
+								<label for="remarks">Reason for visit</label>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger scheduler--submit" id="save-appointment-btn" disabled>Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto">Form validation error</strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+	<div id="main-spinner" class="spinner-wrapper">
+			<div class="spinner-overlay fixed">
+					<div class="spinner-border" role="status"></div>
+			</div>
+	</div>
+{% endblock %}
+{% block scripts %}
+	{{ get_js('masonry.pkgd.min') }}
+	{{ get_js('html5-qrcode') }}
+	{{ get_js('flatpickr.min') }}
+	{{ get_js('just-validate.min') }}
+	{{ get_js('scanner') }}
+	{{ get_js('clinique') }}
+	<script>
+		new Clinique.Scheduler('#scheduler', {
+			url: Flask.url_for('dashboard.make_appointment'),
+			general: true
+		});
+		
+		new Clinique.Autocomplete('#full_name', '#search-results',
+			Flask.url_for('dashboard.patient_search_general'),
+			unique_id => {
+				document.querySelector('[name=patient_id]').value = unique_id;
+			}
+		);
+	/*
+		const time = RDC.getById('appointment-time');
+		const showTimeBtn = RDC.getById('specify-time');
+		const hideTimeBtn = RDC.getById('unspecify-time');
+		const appointmentDate = RDC.getById('appointment-date');
+		const appointmentTime = RDC.getById('appointment-time');
+		const saveBtn = RDC.getById('save-appointment-btn');
+		const form = RDC.getById('schedule-form');
+		
+		const schedValidation = new JustValidate(form, {
+			errorFieldCssClass: 'is-invalid',
+			validateBeforeSubmitting: true,
+			focusInvalidField: true,
+			lockForm: true
+		});
+		
+		schedValidation
+			.addField(appointmentDate, [{rule: 'required'}])
+			.onSuccess(async() => {
+				const url = Flask.url_for('dashboard.update_appointment');
+				const data = new FormData(form);
+				const spinner = RDC.getByClass('spinner-wrapper', form);
+				
+				data.set('appointment_date', appointmentDate.getAttribute('data-true-value'));            
+				data.append('id', RDC.getValue(selectedAppointment));
+				RDC.show(spinner);
+				
+				const result = await RDC.sendJsonData(url, data);
+				
+				if (result.success) {
+					RDC.notify('Success', result.message, RDC.status.success);
+					RDC.refresh(1500);
+				} else {
+					RDC.notify('Process error', result.message, RDC.status.danger);
+					RDC.hide(spinner);
+				}
+			});
+			
+		flatpickr('#appointment-date', {
+			dateFormat: 'm-d-Y',
+			minDate: 'today',
+			onChange: (selectedDates, dateStr, instance) => {
+				const el = instance.element;
+				el.setAttribute('data-true-value', dateStr);
+				RDC.setValue(el, RDC.formatDate(dateStr));
+			}
+		});
+		
+		flatpickr('#appointment-time', {
+			enableTime: true,
+			noCalendar: true,
+			dateFormat: 'h:i K',
+			minTime: '09:00',
+			maxTime: '17:00'
+		});
+		
+		appointmentDate.onchange = () => RDC.enable(saveBtn);
+		appointmentTime.onchange = () => RDC.enable(saveBtn);
+		saveBtn.onclick = () => RDC.trigger(form, 'submit');
+		
+		RDC.hide(time);
+		RDC.hide(hideTimeBtn);
+		
+		showTimeBtn.addEventListener('click', () => {
+			RDC.show(time);
+			RDC.hide(showTimeBtn);
+			RDC.show(hideTimeBtn);
+			schedValidation.addField(appointmentTime, [{rule: 'required'}]);
+		});
+		
+		hideTimeBtn.addEventListener('click', () => {
+			RDC.hide(time);
+			RDC.show(showTimeBtn);
+			RDC.hide(hideTimeBtn);
+			RDC.clear(appointmentTime);
+			schedValidation.removeField(appointmentTime);
+		});
+		
+		const schedulerModal = RDC.getById('scheduler');
+		
+		schedulerModal.addEventListener('show.bs.modal', () => {
+		});*/
+	</script>
+{% endblock %}

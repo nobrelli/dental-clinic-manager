@@ -1,0 +1,15 @@
+**/__pycache__/
+venv
+migrations/
+migrations/archives/
+migrations/catalog/
+migrations/logs/
+migrations/temp/
+.DS_Store
+*.bak
+.vscode
+*.db
+**/logs/*
+**/temp/*
+**/static/img/*
+**/resources/*.jpg

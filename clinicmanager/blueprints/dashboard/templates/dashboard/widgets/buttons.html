@@ -1,0 +1,84 @@
+{% macro create_modal_open_button(
+    text,
+    type = 'button', 
+    theme = 'primary',
+    target = None,
+    icon = None,
+    class = '',
+    id = '',
+	style = '',
+    size = 'md'
+) %}
+    {% if type == 'button' %}
+        <button 
+            type="{{ type }}" 
+            class="btn btn-{{ theme }} btn-{{ size }} {{ class }}"
+                data-bs-toggle="modal"
+                data-bs-target="#{{ target }}"
+                id="{{ id }}"
+				style="{{ style }}">
+            
+            {{ text }}
+        </button>
+    {% elif type == 'link' %}
+        <a href="#{{ target }}"
+            data-bs-toggle="modal",
+			class="{{ class }}"
+			id="{{ id }}"
+			style="{{ style }}">
+            {{ text }}
+        </a>
+    {% endif %}
+{% endmacro %}
+
+{% macro create_modal_close_button(
+    text,
+    type = 'button', 
+    theme = 'primary'
+) %}
+    {% if type == 'button' %}
+        <button 
+            type="{{ type }}" 
+            class="btn btn-{{ theme }}"
+                data-bs-dismiss="modal">
+            {{ text }}
+        </button>
+    {% elif type == 'link' %}
+        <a href="#" data-bs-dismiss="modal">
+            {{ text }}
+        </a>
+    {% endif %}
+{% endmacro %}
+
+{% macro create_regular_button(
+    text,
+    type = 'button',
+    theme = 'primary',
+    class = '',
+    id = '',
+	style='',
+    size='md'
+) %}
+    <button 
+        type="{{ type }}" 
+        class="btn btn-{{ theme }} btn-{{ size }} {{ class }}" 
+        id="{{ id }}"
+		style="{{ style }}">
+        {{ text }}
+    </button>
+{% endmacro %}
+
+{% macro create_link_button(
+    text,
+    url = '',
+    theme = 'primary',
+    class = '',
+    id = ''
+) %}
+    <a  href="{{ url }}"
+        type="{{ type }}" 
+        class="btn btn-{{ theme }} {{ class }}" 
+        id="{{ id }}">
+        {{ text }}
+    </a>
+{% endmacro %}

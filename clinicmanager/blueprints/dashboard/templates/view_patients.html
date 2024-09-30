@@ -1,0 +1,137 @@
+{% extends './dashboard/_base.html' %}
+
+{% block contents %}
+	{% if records.total > 0 %}
+		<div class="d-flex mb-3">
+			<div class="d-flex justify-content-between w-100">
+				<div class="input-group me-2">
+					<input type="hidden" id="search_action" value="{{ url_for('dashboard.search_patients') }}">
+					<input type="search"
+						name="search"
+						class='form-control'
+						id="search"
+						value="{{ search }}"
+						placeholder='Search patient'
+						autocapitalize="words"
+						autocomplete="off">
+					<span class="input-group-text">
+						<a class="enye-append"
+						style="cursor: pointer; text-decoration:none"
+						data-field="search">&#241;</a>
+					</span>
+				</div>
+				<a href="{{ url_for('dashboard.view_patients') }}"
+				class='btn btn-primary {% if not search %}disabled{% endif %}'>Clear</a>
+			</div>
+		</div>
+		{% if search %}
+			<h3 class="mb-3">Search results for "{{ search }}"</h3>
+		{% endif %}
+		<h4 class="text-center" id="no-record"></h4>
+		<div class="list-group" id="records">
+		{% for patient in records %}
+			<a href="{{ url_for('dashboard.view_patient', id=patient.unique_id) }}"
+			   class="list-group-item list-group-item-action">
+				<div class="row">
+					<div class="col-md">
+						<h5 class="patient-name">{{ patient.full_name }}</h5>
+						<p class="mb-1 patient-address">{{ patient.address }}</p>
+						<small class="text-muted patient-info">
+							{%- if patient.birthdate -%}
+								{{ patient.birthdate | calculate_age }}
+								year{{ patient.birthdate | calculate_age | pluralize('', 's') }} old
+							{%- else -%}No details
+							{%- endif -%}
+						</small>
+					</div>
+					{% if not request.MOBILE %}
+						<div class="col-md text-end">
+							<small class="text-muted" style="font-size: 12px;">
+								added: {{ moment(patient.created_at).format('MMM D YYYY, h:mm A') }}</small>
+						{% if patient.updated_at %}
+							<br>
+							<small class="text-muted" style="font-size: 12px;">
+								edited: {{ moment(patient.updated_at).format('MMM D YYYY, h:mm A') }}</small>
+							<br>
+							{% if patient.patient_type == 'ortho' %}
+								<div class="badge text-bg-primary">Ortho</div>
+							{% endif %}
+						{% endif %}
+						</div>
+					{% endif %}
+				</div>
+			</a>
+		{% endfor %}
+		</div>
+		<nav class="mt-5">
+			<ul class="pagination flex-wrap justify-content-center">
+				<li class="page-item" id="prev_page" {% if not records.has_prev %}style="display:none"{% endif %}>
+					{% if search %}
+						<a class="page-link"
+						   href="{{ url_for('dashboard.view_patients',
+						   page=records.prev_num, search=search) }}"><</a>
+					{% else %}
+						<a class="page-link"
+						   href="{{ url_for('dashboard.view_patients',
+						   page=records.prev_num) }}"><</a>
+					{% endif %}
+				</li>
+
+				{% if records.pages > 1 %}
+				{% for page in records.iter_pages() %}
+					{% if page %}
+						<li class="page-item page {% if page == records.page %}active{% endif %}">
+							{% if search %}
+								<a class="page-link"
+								   href="{{ url_for('dashboard.view_patients',
+								   page=page, search=search) }}">{{ page }}</a>
+							{% else %}
+								<a class="page-link"
+								   href="{{ url_for('dashboard.view_patients', page=page) }}">{{ page }}</a>
+							{% endif %}
+						</li>
+					{% else %}
+						<li class="page-item">
+							<a class="page-link disabled">...</a>
+						</li>
+					{% endif %}
+				{% endfor %}
+				{% endif %}
+
+				<li class="page-item" id="next_page" {% if not records.has_next %}style="display:none"{% endif %}>
+					{% if search %}
+						<a class="page-link" href="{{ url_for('dashboard.view_patients',
+						page=records.next_num, search=search) }}">></a>
+					{% else %}
+						<a class="page-link" href="{{ url_for('dashboard.view_patients',
+						page=records.next_num) }}">></a>
+					{% endif %}
+				</li>
+			</ul>
+		</nav>
+	{% else %}
+		<h4 class="text-center">No records</h3>
+	{% endif %}
+	<div id="to_clone" style="display: none">
+		<a class="list-group-item list-group-item-action record-item">
+			<div class="row">
+				<div class="col-md">
+					<h5 class="patient-name"></h5>
+					<p class="mb-1 patient-address"></p>
+					<small class="text-muted patient-info"></small>
+				</div>
+				<div class="col-md text-end">
+					<small class="text-muted date-added" style="font-size: 12px;"></small><br>
+					<small class="text-muted date-updated" style="font-size: 12px;"></small>
+				</div>
+			</div>
+		</a>
+		<li class="page-item page">
+			<a class="page-link"></a>
+		</li>
+	</div>
+{% endblock %}
+{% block scripts %}
+	{{ get_js('mark.es6.min') }}
+    {{ get_js('patients') }}
+{% endblock %}

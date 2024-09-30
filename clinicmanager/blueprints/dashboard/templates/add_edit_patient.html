@@ -1,0 +1,328 @@
+{% extends './dashboard/_base.html' %}
+
+{% block contents %}
+    <h3>New Patient</h3>
+    <hr>
+    <form class="pb-5"
+          method="post"
+          autocomplete="off"
+          enctype="multipart/form-data"
+          id="patient-form"
+          novalidate>
+        {{ form.hidden_tag() }}
+        <div class="accordion" id="new-patient-form">
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#basic-info">
+                        Basic Info
+                    </button>
+                </h3>
+                <div id="basic-info" 
+                     class="accordion-collapse collapse show"
+                     data-bs-parent="#new-patient-form">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                {{ form.first_name.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.first_name(class='form-control cappy') }}
+                                    <span class="input-group-text">
+                                        <a class="enye-append" data-field="first_name">&#241;</a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                {{ form.last_name.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.last_name(class='form-control cappy') }}
+                                    <span class="input-group-text">
+                                        <a class="enye-append" data-field="last_name">&#241;</a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                {{ form.middle_initial.label(class='form-label') }}
+                                {{ form.middle_initial(class='form-control dotize cappy') }}
+                            </div>
+                            <div class="col-2">
+                                {{ form.suffix.label(class='form-label') }}
+                                {{ form.suffix(class='form-control dotize cappy') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                {{ form.birthdate.label(class='form-label') }}
+                                {{ form.birthdate(class='form-control flatpickr flatpickr-input', readonly=True) }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.sex.label(class='form-label') }}
+                                {{ form.sex(class='form-select') }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.occupation.label(class='form-label') }}
+                                {{ form.occupation(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                {{ form.height.label(class='form-label') }}
+                                {{ form.height(class='form-control') }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.weight.label(class='form-label') }}
+                                {{ form.weight(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#contact-info">
+                        Contact Info
+                    </button>
+                </h3>
+                <div id="contact-info" 
+                     class="accordion-collapse collapse"
+                     data-bs-parent="#new-patient-form">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                {{ form.number.label(class='form-label') }}
+                                {{ form.number(class='form-control') }}
+                            </div>
+                            <div class="col-6">
+                                {{ form.email.label(class='form-label') }}
+                                {{ form.email(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{ form.address.label(class='form-label') }}
+                                {{ form.address(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item for-minors" id="minors-section">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#minor-info">
+                        For minors
+                    </button>
+                </h3>
+                <div id="minor-info" 
+                     class="accordion-collapse collapse"
+                     data-bs-parent="#new-patient-form">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                {{ form.father_name.label(class='form-label') }}
+                                {{ form.father_name(class='form-control') }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.father_occupation.label(class='form-label') }}
+                                {{ form.father_occupation(class='form-control') }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.father_contact.label(class='form-label') }}
+                                {{ form.father_contact(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                {{ form.mother_name.label(class='form-label') }}
+                                {{ form.mother_name(class='form-control') }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.mother_occupation.label(class='form-label') }}
+                                {{ form.mother_occupation(class='form-control') }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.mother_contact.label(class='form-label') }}
+                                {{ form.mother_contact(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#referral-info">
+                        Referral
+                    </button>
+                </h3>
+                <div id="referral-info" 
+                     class="accordion-collapse collapse"
+                     data-bs-parent="#new-patient-form">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-6">
+                                {{ form.referrer.label(class='form-label') }}
+                                {{ form.referrer(class='form-control') }}
+                            </div>
+                            <div class="col-6">
+                                {{ form.reason_for_consulation.label(class='form-label') }}
+                                {{ form.reason_for_consulation(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#history-info">
+                        Medical History
+                    </button>
+                </h3>
+                <div id="history-info" 
+                     class="accordion-collapse collapse"
+                     data-bs-parent="#new-patient-form">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                {{ form.current_medications.label(class='form-label') }}
+                                {{ form.current_medications(class='form-control') }}
+                            </div>
+                            <div class="col-6">
+                                {{ form.allergies.label(class='form-label') }}
+                                {{ form.allergies(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                {{ form.previous_hospitalization.label(class='form-label') }}
+                                {{ form.previous_hospitalization(class='form-control') }}
+                            </div>
+                            <div class="col-6">
+                                {{ form.abnormalities.label(class='form-label') }}
+                                {{ form.abnormalities(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.conditions.label(class='form-label') }}
+                                {{ form.conditions(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row mb-2 for-minors">
+                            <div class="col">
+                                <div class="form-check">
+                                    {{ form.has_reactions.label(class='form-check-label') }}
+                                    {{ form.has_reactions(class='form-check-input') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2 for-minors">
+                            <div class="col">
+                                <div class="form-check">
+                                    {{ form.has_problems.label(class='form-check-label') }}
+                                    {{ form.has_problems(class='form-check-input') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <div class="form-check">
+                                    {{ form.has_family_history.label(class='form-check-label') }}
+                                    {{ form.has_family_history(class='form-check-input') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                {{ form.blood_type.label(class='form-label') }}
+                                {{ form.blood_type(class='form-control') }}
+                            </div>
+                            <div class="col-6">
+                                {{ form.blood_pressure.label(class='form-label') }}
+                                {{ form.blood_pressure(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{ form.notes.label(class='form-label') }}
+                                {{ form.notes(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#signature-section">
+                        Signature
+                    </button>
+                </h3>
+                <div id="signature-section" 
+                     class="accordion-collapse collapse"
+                     data-bs-parent="#new-patient-form">
+                    <div class="accordion-body">
+                        <input type="file" id="signature-uploader">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <input type="submit" class="btn btn-primary mt-4" value="Add record">
+        </div>
+    </form>
+
+    <!-- modal -->
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto"></strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+    <div class="spinner-wrapper">
+        <div class="spinner-overlay fixed">
+            <div class="spinner-border" role="status"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block styles %}
+    {{ get_css('core.min', 'filepond') }}
+    {{ get_css('plugin-image-edit', 'filepond') }}
+    {{ get_css('plugin-image-preview', 'filepond') }}
+{% endblock %}
+{% block scripts %}
+    {{ get_js('just-validate.min') }}
+    {{ get_js('flatpickr.min') }}
+    
+    {{ get_js('plugin-file-encode', 'filepond') }}
+    {{ get_js('plugin-file-rename', 'filepond') }}
+    {{ get_js('plugin-file-validate-size', 'filepond') }}
+    {{ get_js('plugin-file-validate-type', 'filepond') }}
+    {{ get_js('plugin-image-crop', 'filepond') }}
+    {{ get_js('plugin-image-edit', 'filepond') }}
+    {{ get_js('plugin-image-exif-orientation', 'filepond') }}
+    {{ get_js('plugin-image-preview', 'filepond') }}
+    {{ get_js('plugin-image-resize', 'filepond') }}
+    {{ get_js('plugin-image-transform', 'filepond') }}
+    {{ get_js('plugin-image-validate-size', 'filepond') }}
+    {{ get_js('core.min', 'filepond') }}
+    
+    {{ get_js('new_record') }}
+{% endblock %}

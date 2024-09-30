@@ -1,0 +1,73 @@
+<div class="col">
+    <div class="row mb-2">
+        <div class="col">
+            <select class="form-select form-select" name="medication" style="height: 100%" required>
+                <option disabled selected value="">Select medication</option>
+                {% if medications.count() %}
+                    {% for medication in medications %}
+                        <option value="{{ medication.id }}" data-type="{{ medication.type }}">{{ medication.drug }} ({{ medication.dose }} mg{% if medication.type == 'bot' %}/{{ medication.unit }} mL{% endif %})</option>
+                    {% endfor %}
+                {% else %}
+                    <option disabled selected>Add a medication</option>
+                {% endif %}
+            </select>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <div class="form-floating input-group">
+                <input class="form-control form-control-sm" placeholder="Disp. #" name="disp" type="number" min="0" required>
+                <label for="disp" class="form-label">Disp. #</label>
+                <span class="input-group-text disp_type">cap</span>
+            </div>
+        </div>
+    </div>
+    <strong class="mb-2 d-block">Sig.</strong>
+    <div class="row mb-2">
+        <div class="col-2 d-flex align-items-center">
+            Take
+        </div>
+        <div class="col">
+            <div class="form-floating input-group">
+                <input class="form-control form-control-sm" placeholder=" " name="dosage" type="number" min="0" required>
+                <label for="disp" class="form-label">Quantity</label>
+                <span class="input-group-text dose_type"></span>
+            </div>
+        </div>
+        <div class="col amount-field">
+            <div class="form-floating input-group">
+                <input class="form-control form-control-sm" placeholder=" " name="amount" type="number" min="0">
+                <label for="amount" class="form-label">Amount</label>
+                <span class="input-group-text">mL</span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-2 d-flex align-items-center">
+            every
+        </div>
+        <div class="col">
+            <div class="form-floating">
+                <input class="form-control form-control-sm" placeholder=" " name="freqh" type="number" required>
+                <label for="freqh" class="form-label">hour(s)</label>
+            </div>
+        </div>
+        <div class="col-1 d-flex align-items-center">
+            for
+        </div>
+        <div class="col">
+            <div class="form-floating">
+                <input class="form-control form-control-sm" placeholder=" " name="freqd" type="number">
+                <label for="freqd" class="form-label">day(s)</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-check">
+                <input class="form-check-input" name="prn" type="checkbox" novalidate>
+                <label for="prn" class="form-check-label">Taken as needed</label>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+{% from 'dashboard/helpers.html' import get_css, get_js %}
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, 
+                                        initial-scale=1, 
+                                        minimum-scale=1, 
+                                        maximum-scale=1, 
+                                        user-scalable=no">
+        <title>{{ title }}</title>
+        {{ JSGlue.include() }}
+        {{ moment.include_moment(local_js=url_for('static', filename='js/moment.min.js')) }}
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <!-- {{ get_css('bootstrap.min', 'bootstrap') }} -->
+        <!-- {{ get_css('bootstrap-icons', 'bootstrap-icons') }} -->
+        {{ get_css('flatpickr.min') }}
+        {{ get_css('main') }}
+        {% block styles %}{% endblock %}
+    </head>
+    <body>
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
+            <div class="container">
+                <a class="navbar-brand h3" href="{{ url_for('dashboard.index') }}">Patient Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#toggler">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="toggler">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard.index') }}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard.view_calendar') }}">Calendar</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Patients</a>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard.view_patients') }}">View records</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard.add_patient') }}">Add patient</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard.new_ortho') }}">Orthodontic</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Catalog</a>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard.view_products') }}">Items</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard.view_medications') }}">Medications</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard.view_procedures') }}">Procedures</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-sm-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Account</a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end text-small">
+                                <li><a class="dropdown-item" href="{{ url_for('admin.change_password') }}">Change password</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ url_for('admin.logout') }}" method="post">
+                                        {{ logout.csrf_token() }}
+                                        <a class="dropdown-item" href="#" id="logout">Sign out</a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container py-5">
+            {% block contents %}{% endblock %}
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap.native@5.0.9/dist/bootstrap-native.min.js"></script>
+        <!-- {{ get_js('bootstrap-native.min', 'bootstrap-native') }} -->
+        {{ get_js('feather.min') }}
+        {{ get_js('anime.min') }}
+        {{ get_js('ua-parser') }}
+        {{ get_js('main') }}
+        {{ get_js('dashboard') }}
+
+        <script>feather.replace()</script>
+
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>

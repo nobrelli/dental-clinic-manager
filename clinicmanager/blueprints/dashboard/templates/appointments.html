@@ -1,0 +1,97 @@
+{% extends 'dashboard/_base.html' %}
+
+{% block contents %}
+    {% with active = 'appointments' %}
+        {% include 'dashboard/sections/patient_nav.html' %}
+    {% endwith %}
+    {% if appointments.count() > 0 %}
+        <input type="hidden" id="patient-id" value="{{ patient.unique_id }}">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Creation Date</th>
+                    <th>Scheduled Date</th>
+                    <th colspan="2">Scheduled Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                    <tr data-bs-toggle="modal"
+                        data-bs-target="#appointment-modal"
+                        class="appointment {% if appointment.done %}done{% endif %}">
+                        <input type="hidden" class="remarks" value="{{ appointment.remarks }}">
+                        <td class="appointment-id">{{ appointment.id }}</td>
+                        <td>
+                            {{ moment(appointment.created_at).format('MMM D, YYYY, h:mm A') }}</td>
+                        <td class="appointment-date-value" data-true-value="{{ appointment.schedule_date }}">
+                            {{ moment(appointment.schedule_date).format('MMM D, YYYY') }}
+                        </td>
+                        <td class="appointment-time-value">
+                            {% if appointment.schedule_time %}
+                                {{ moment(appointment.schedule_time, local=True).format('h:mm A') }}
+                            {% else %}Unspecified
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown">Actions</a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item"
+                                        href="#cancel-confirm"
+                                        data-bs-toggle="modal">Cancel</a></li>
+                                    {% if appointment.done %}
+                                    <li><a href="#" class="dropdown-item unmark-done">Unmark as done</a></li>
+                                    {% else%}
+                                    <li><a href="#" class="dropdown-item mark-done">Mark as done</a></li>
+                                    {% endif %}
+                                    <li><a class="dropdown-item edit-appointment-trigger"
+                                        href="#scheduler-modal"
+                                        data-bs-toggle="modal">Reschedule</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h4 class="text-center">No appointments</h4>
+    {% endif %}
+    {% include 'dashboard/sections/schedule.html' %}
+    <div class="modal fade" 
+        id="cancel-confirm" 
+        tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="m-0 modal-message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-no" id="no-btn" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger modal-yes" id="cancel-btn">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="selected-appointment">
+    <div class="spinner-wrapper" id="global-spinner">
+        <div class="spinner-overlay fixed">
+            <div class="spinner-border" role="status"></div>
+        </div>
+    </div>
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto"></strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+{% endblock %}
+{% block scripts %}
+    {{ get_js('just-validate.min') }}
+    {{ get_js('flatpickr.min') }}
+    {{ get_js('appointments') }}
+{% endblock %}

@@ -1,0 +1,776 @@
+{% extends './dashboard/_base.html' %}
+{% from './dashboard/helpers.html' import render_info %}
+
+{% block contents %}
+	{% if patient %}
+		{% with active = 'ortho' %}
+			{% include 'dashboard/sections/patient_nav.html' %}
+		{% endwith %}
+		<div class="row" data-masonry='{"percentPosition": true }'>
+			<div class="col-md-6 mb-4">
+				<div class="card shadow">
+					<div class="card-body">
+						<section id="general-info">
+							<h6 class="text-muted">GENERAL INFO</h6>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.has_past_ortho.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.has_past_ortho or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.has_past_ortho(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.has_nasorespiratory.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.has_nasorespiratory or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.has_nasorespiratory(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col">
+									<strong>{{ form.has_tonsilitis.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.has_tonsilitis or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.has_tonsilitis(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.has_allergy.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.has_allergy or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.has_allergy(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.other_problems.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.other_problems or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.other_problems(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+						</section>
+						<section id="facial-features">
+                            <hr>
+							<h6 class="text-muted">FACIAL FEATURES</h6>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.posture_at_rest.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.posture_at_rest or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.posture_at_rest(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.upper_lip.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.upper_lip or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.upper_lip(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col">
+									<strong>{{ form.lower_lip.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.lower_lip or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.lower_lip(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.soft_tissue_profile.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.soft_tissue_profile or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.soft_tissue_profile(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col">
+									<strong>{{ form.breathing_pattern.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.breathing_pattern or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.breathing_pattern(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+						</section>
+						<section id="intra-oral-features">
+                            <hr>
+							<h6 class="text-muted">INTRA-ORAL FEATURES</h6>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.gingiva.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.gingiva or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.gingiva(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col">
+									<strong>{{ form.tonsils.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.tonsils or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.tonsils(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.adenoids.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.adenoids or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.adenoids(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+                            <hr>
+                            <h6>Tongue Action</h6>
+                            <hr>
+                            <div class="ms-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.extent_mobility.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.extent_mobility or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.extent_mobility(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.postural_position.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.postural_position or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.postural_position(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.position_speech.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.position_speech or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.position_speech(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <h6>Swallowing</h6>
+                            <hr>
+                            <div class="ms-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.unconscious.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.unconscious or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.unconscious(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.command.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.command or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.command(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.water.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.water or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.water(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.masticatory.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.masticatory or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.masticatory(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.swallowing_notes.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.swallowing_notes or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.swallowing_notes(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <h6>Habits</h6>
+                            <hr>
+                            <div class="ms-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.digital_habit.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.digital_habit or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.digital_habit(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.bruxism.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.bruxism or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.bruxism(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.occurrence.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.occurrence or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.occurrence(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.continuous.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.continuous or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.continuous(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.night_only.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.night_only or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.night_only(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.tension_only.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.tension_only or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.tension_only(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.correction_attempt.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.correction_attempt or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.correction_attempt(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.habit_notes.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.habit_notes or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.habit_notes(class='form-select form-select-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+						</section>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 mb-4">
+				<div class="card shadow">
+					<div class="card-body">
+						<section id="general-info">
+							<h6 class="text-muted">DEFINITIONS AND OCCLUSION</h6>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.supernumerary_teeth.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.supernumerary_teeth or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.supernumerary_teeth(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col">
+									<strong>{{ form.missing_teeth.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.missing_teeth or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.missing_teeth(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.delayed_development.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.delayed_development or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.delayed_development(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.eruptions_sequence.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.eruptions_sequence or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.eruptions_sequence(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.maxillary_arch_form.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.maxillary_arch_form or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.maxillary_arch_form(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col">
+									<strong>{{ form.mandibular_arch_form.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.mandibular_arch_form or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.mandibular_arch_form(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.molar_relationship.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.molar_relationship or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.molar_relationship(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col">
+									<strong>{{ form.cuspid_relationship.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.cuspid_relationship or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.cuspid_relationship(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.overjet.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.overjet or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.overjet(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.overbite.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.overbite or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.overbite(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.openbite.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.openbite or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.openbite(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+                            <hr>
+                            <h6>Midlines</h6>
+                            <hr>
+                            <div class="ms-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.together.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.together or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.together(class='form-control form-control-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.lower1.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.lower1 or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.lower1(class='form-control form-control-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.to_right.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.to_right or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.to_right(class='form-control form-control-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.lower2.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.lower2 or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.lower2(class='form-control form-control-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.to_left.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.to_left or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.to_left(class='form-control form-control-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>{{ form.arch_asymmetry.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.arch_asymmetry or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.arch_asymmetry(class='form-control form-control-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <strong>{{ form.teeth_displaced.label }}</strong>
+                                        <p class="text-muted ms-3 profile-field d-flex align-items-center">
+                                            <span>{{ ortho.teeth_displaced or 'Unspecified' }}</span>
+                                            <button type="button" class="btn btn-sm edit-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {{ form.teeth_displaced(class='form-control form-control-sm profile-field-input') }}
+                                            <button type="button" class="btn btn-sm done-button">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+							<div class="row">
+								<div class="col">
+									<strong>{{ form.concerns.label }}</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ ortho.concerns or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.concerns(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+                            </div>
+						</section>
+                    </div>
+                </div>
+            </div>
+		</div>
+	{% else %}
+		<h4 class="text-center">The record for this patient has been deleted.</h4>
+	{% endif %}
+
+    <div id="overlay">
+        <div class="d-flex align-items-center justify-content-center" style="height: 100%">
+            <div class="circ-loader"></div>
+        </div>
+    </div>
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto">Form validation error</strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+{% endblock %}
+{% block scripts %}
+	<script>sessionStorage.setItem('patient_unique_id', '{{ patient.unique_id }}')</script>
+	{{ get_js('masonry.pkgd.min') }}
+	{{ get_js('just-validate.min') }}
+	
+	{{ get_js('ortho') }}
+    <script>Ortho.view()</script>
+{% endblock %}

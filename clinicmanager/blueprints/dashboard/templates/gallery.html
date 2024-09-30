@@ -1,0 +1,178 @@
+{% extends 'dashboard/_base.html' %}
+
+{% block contents %}
+    {% with active = 'gallery' %}
+        {% include 'dashboard/sections/patient_nav.html' %}
+    {% endwith %}
+    <section id="gallery-uploader-section">
+        <button type="button" 
+            class="btn btn-primary btn-sm mb-2" 
+            data-bs-toggle="modal"
+            data-bs-target="#uploader-modal">Upload</button>
+    </section>
+    <section id="gallery" class="row">
+        <div class="col-md-4 gallery-sizer"></div>
+        {% for image in images %}
+            <div class="col-md-4 mb-4 gallery-image">
+                <img style="width: 100%" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#view-modal"
+                    src="{{ url_for('dashboard.view_image', id=patient.unique_id, filename=image.filename) }}"
+                    data-filename="{{ image.filename }}">
+                <button class="btn-close delete-button" 
+                    type="button" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#delete-confirm"></button>
+            </div>
+        {% endfor %}
+    </section>
+	<div class="modal fade"
+		 id="uploader-modal"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+                <div class="modal-header justify-content-between">
+                    <h4 class="mb-0 scheduler-heading">Upload</h4>
+                    <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+				<div class="modal-body">
+                    <input type="file" 
+                        id="gallery-uploader"
+                        name="gallery-uploader">
+                    <div id="uploader-details">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label class="form-label">Date taken</label>
+                                <input class="form-control" class="flatpickr flatpickr-input" type="text" name="date_taken">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category">
+                                    <option value="">-</option>
+                                    <option>Cast</option>
+                                    <option>Panoramic Radiograph</option>
+                                    <option>Lateral Cephalograph</option>
+                                    <option>Photograph</option>
+                                    <option>Others</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" id="upload-button">Upload</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade"
+		 id="view-modal"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 tabindex="-1">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+                <div class="modal-header justify-content-between">
+                    <h4 class="mb-0 scheduler-heading">View</h4>
+                    <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+				<div class="modal-body">
+                    <img id="gallery-image-preview" style="width: 100%">
+                    <div id="uploader-details" class="mt-2">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <strong>Date taken</strong>
+                            </div>
+                            <div class="col">
+                                <span id="date-taken-preview"></span>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <strong>Category</strong>
+                            </div>
+                            <div class="col">
+                                <span id="category-preview"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <strong>Description</strong>
+                            </div>
+                            <div class="col">
+                                <span id="description-preview"></span>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade"
+		 id="delete-confirm"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body">
+                    <input type="hidden" id="image-to-delete">
+					<span id="delete-message">Delete this picture?</span>
+				</div>
+				<div class="modal-footer">
+					<input type="hidden" name="patient-id" value="{{ patient.unique_id }}">
+					<button type="button" class="btn btn-secondary" id="unconfirm-delete" data-bs-dismiss="modal">No</button>
+					<button type="button" class="btn btn-danger" id="confirm-delete">Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="spinner-wrapper">
+        <div class="spinner-overlay fixed">
+            <div class="spinner-border" role="status"></div>
+        </div>
+    </div>
+    <div class="toast-container position-fixed bottom-0 start-0 p-3">
+        <div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto"></strong>
+                <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block styles %}
+    {{ get_css('core.min', 'filepond') }}
+    {{ get_css('plugin-image-edit', 'filepond') }}
+    {{ get_css('plugin-image-preview', 'filepond') }}
+{% endblock %}
+{% block scripts %}
+    {{ get_js('plugin-file-encode', 'filepond') }}
+    {{ get_js('plugin-file-rename', 'filepond') }}
+    {{ get_js('plugin-file-validate-size', 'filepond') }}
+    {{ get_js('plugin-file-validate-type', 'filepond') }}
+    {{ get_js('plugin-image-crop', 'filepond') }}
+    {{ get_js('plugin-image-edit', 'filepond') }}
+    {{ get_js('plugin-image-exif-orientation', 'filepond') }}
+    {{ get_js('plugin-image-preview', 'filepond') }}
+    {{ get_js('plugin-image-resize', 'filepond') }}
+    {{ get_js('plugin-image-transform', 'filepond') }}
+    {{ get_js('plugin-image-validate-size', 'filepond') }}
+    {{ get_js('core.min', 'filepond') }}
+    
+    {{ get_js('masonry.pkgd.min') }}
+    {{ get_js('imagesloaded.pkgd') }}
+    {{ get_js('flatpickr.min') }}
+    {{ get_js('gallery') }}
+{% endblock %}

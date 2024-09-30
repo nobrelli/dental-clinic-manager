@@ -1,0 +1,53 @@
+{% extends 'dashboard/_base.html' %}
+
+{% block contents %}
+    <h3>New Ortho Patient</h3>
+    <hr>
+    <section id="patient-section">
+        <h5>Select Patient</h5>
+        <div id="patient-search" class="mt-3">
+            <input type="text" class="form-control" id="patient-finder" placeholder="Search...">
+            <ul id="search-results"></ul>
+        </div>
+        <div class="separator">or</div>
+        <h5>Add New</h5>
+        <div id="patient-new" class="mt-3">
+            <div class="row">
+                <div class="col-5">
+                    <label class="form-label">First name</label>
+                    <input type="text" class="form-control cappy" id="first-name" placeholder=" ">
+                </div>
+                <div class="col-5">
+                    <label class="form-label">Last name</label>
+                    <input type="text" class="form-control cappy" id="last-name" placeholder=" ">
+                </div>
+                <div class="col">
+                    <label class="form-label">Middle initial</label>
+                    <input type="text" class="form-control cappy dotize" id="middle-initial" placeholder=" ">
+                </div>
+            </div>
+        </div>
+        <div class="mt-5 text-center">
+            <button type="button" id="addnew" class="btn btn-primary" disabled>Add New</button>
+        </div>
+    </section>
+    
+    <div class="spinner-wrapper">
+        <div class="spinner-overlay fixed">
+            <div class="spinner-border" role="status"></div>
+        </div>
+    </div>
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto">Form validation error</strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+{% endblock %}
+{% block scripts %}
+    {{ get_js('ortho') }}
+    <script>Ortho.create()</script>
+{% endblock %}

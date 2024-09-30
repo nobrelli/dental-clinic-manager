@@ -1,0 +1,640 @@
+{% extends './dashboard/_base.html' %}
+{% from './dashboard/helpers.html' import render_info %}
+{% from './dashboard/widgets/buttons.html' import create_modal_open_button, create_regular_button %}
+
+{% block contents %}
+	{% if patient %}
+		<div class="d-flex justify-content-end w-100 mb-3">
+			<a href="{{ url_for('dashboard.view_patients') }}"
+			   class='btn btn-primary btn-sm me-2'>Return to list</a>
+			<div class="dropdown">
+				<a href="#" data-bs-toggle="dropdown"
+				   class='btn btn-primary btn-sm dropdown-toggle'>Actions</a>
+				<ul class="dropdown-menu dropdown-menu-end">
+					<li><a class="dropdown-item" data-bs-toggle="modal"
+						   href="#scheduler-modal">Schedule</a></li>
+					<li>{{ create_modal_open_button('Prescribe', 'link',
+						target='prescription', class='dropdown-item') }}</li>
+					<li><a class="dropdown-item" data-bs-toggle="modal"
+						   href="#deleteConfirm" id="deleteToggle">Delete</a></li>
+					<li>{{ create_modal_open_button('Bill', 'link',
+						target='billing', class='dropdown-item') }}</li>
+				</ul>
+			</div>
+		</div>
+		{% with active = 'profile' %}
+			{% include 'dashboard/sections/patient_nav.html' %}
+		{% endwith %}
+		<div class="row" data-masonry='{"percentPosition": true }'>
+			<div class="col-md-6 mb-4">
+				<div class="card shadow">
+					<div class="card-body">
+						<section id="basic-info">
+							<h3 class="card-title mb-0">{{ patient.full_name }}</h3>
+							<hr>
+							<h6 class="text-muted">BASIC INFO</h6>
+							<hr>
+							<div class="row">
+								<div class="col-6">
+									<strong>GENDER</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.sex }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.sex(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col-6">
+									<strong>AGE</strong>
+									<p class="text-muted ms-3 d-flex align-items-center">
+										{% if patient.birthdate %}
+											{{ patient.birthdate | calculate_age }} y/o
+										{% else %}
+											Unspecified
+										{% endif %}
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6">
+									<strong>BIRTH</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>
+										{%- if patient.birthdate -%}
+											{{ patient.birthdate | format_date  }}
+										{%- else -%}
+											Unspecified
+										{%- endif -%}
+										</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.birthdate(
+											class='form-control form-control-sm flatpickr flatpickr-input profile-field-input', 
+											id='birthdate', placeholder='Select date', readonly=True) }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col-6">
+									<strong>OCCUPATION</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.occupation or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.occupation(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6">
+									<strong>HEIGHT</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.height or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.height(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col-6">
+									<strong>WEIGHT</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.weight or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.weight(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+						</section>
+						<section id="contact-info">
+							<hr>
+							<h6 class="text-muted">CONTACT INFO</h6>
+							<hr>
+							<div class="row">
+								<div class="col-6">
+									<strong>PHONE/TEL</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.number or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.number(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col-6">
+									<strong>EMAIL</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.email or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.email(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>ADDRESS</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.address or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.address(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+						</section>
+								<section id="parents-info">
+									<hr>
+									<h6 class="text-muted">PARENTS INFO</h6>
+									<hr>
+									<div class="row">
+										<div class="col-6">
+											<strong>FATHER</strong>
+											<p class="text-muted ms-3 profile-field d-flex align-items-center">
+												<span>{{ patient.father_name or 'Unspecified' }}</span>
+												<button type="button" class="btn btn-sm edit-button">
+													<i class="bi bi-pencil-fill"></i>
+												</button>
+												{{ form.father_name(class='form-control form-control-sm profile-field-input') }}
+												<button type="button" class="btn btn-sm done-button">
+													<i class="bi bi-check-circle-fill text-success"></i>
+												</button>
+											</p>
+										</div>
+										<div class="col-6">
+											<strong>OCCUPATION</strong>
+											<p class="text-muted ms-3 profile-field d-flex align-items-center">
+												<span>{{ patient.father_occupation or 'Unspecified' }}</span>
+												<button type="button" class="btn btn-sm edit-button">
+													<i class="bi bi-pencil-fill"></i>
+												</button>
+												{{ form.father_occupation(class='form-control form-control-sm profile-field-input') }}
+												<button type="button" class="btn btn-sm done-button">
+													<i class="bi bi-check-circle-fill text-success"></i>
+												</button>
+											</p>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<strong>PHONE/TEL</strong>
+											<p class="text-muted ms-3 profile-field d-flex align-items-center">
+												<span>{{ patient.father_contact or 'Unspecified' }}</span>
+												<button type="button" class="btn btn-sm edit-button">
+													<i class="bi bi-pencil-fill"></i>
+												</button>
+												{{ form.father_contact(class='form-control form-control-sm profile-field-input') }}
+												<button type="button" class="btn btn-sm done-button">
+													<i class="bi bi-check-circle-fill text-success"></i>
+												</button>
+											</p>
+										</div>
+									</div>
+									<hr>
+									<div class="row">
+										<div class="col-6">
+											<strong>MOTHER</strong>
+											<p class="text-muted ms-3 profile-field d-flex align-items-center">
+												<span>{{ patient.mother_name or 'Unspecified' }}</span>
+												<button type="button" class="btn btn-sm edit-button">
+													<i class="bi bi-pencil-fill"></i>
+												</button>
+												{{ form.mother_name(class='form-control form-control-sm profile-field-input') }}
+												<button type="button" class="btn btn-sm done-button">
+													<i class="bi bi-check-circle-fill text-success"></i>
+												</button>
+											</p>
+										</div>
+										<div class="col-6">
+											<strong>OCCUPATION</strong>
+											<p class="text-muted ms-3 profile-field d-flex align-items-center">
+												<span>{{ patient.mother_occupation or 'Unspecified' }}</span>
+												<button type="button" class="btn btn-sm edit-button">
+													<i class="bi bi-pencil-fill"></i>
+												</button>
+												{{ form.mother_occupation(class='form-control form-control-sm profile-field-input') }}
+												<button type="button" class="btn btn-sm done-button">
+													<i class="bi bi-check-circle-fill text-success"></i>
+												</button>
+											</p>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<strong>PHONE/TEL</strong>
+											<p class="text-muted ms-3 profile-field d-flex align-items-center">
+												<span>{{ patient.mother_contact or 'Unspecified' }}</span>
+												<button type="button" class="btn btn-sm edit-button">
+													<i class="bi bi-pencil-fill"></i>
+												</button>
+												{{ form.mother_contact(class='form-control form-control-sm profile-field-input') }}
+												<button type="button" class="btn btn-sm done-button">
+													<i class="bi bi-check-circle-fill text-success"></i>
+												</button>
+											</p>
+										</div>
+									</div>
+								</section>
+						<section id="referral-info">
+							<hr>
+							<h6 class="text-muted">REFERRAL INFO</h6>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<strong>REFERRER</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.referrer or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.referrer(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>REASON FOR CONSULTATION</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.reason_for_consulation or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.reason_for_consulation(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 mb-4">
+				<div class="card shadow">
+					<div class="card-body">
+						<section id="health-info">
+							<h6 class="text-muted">HEALTH INFO</h6>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<strong>BLOOD TYPE</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.blood_type }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.blood_type(class='form-select form-select-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+								<div class="col">
+									<strong>BLOOD PRESSURE</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.blood_pressure or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.blood_pressure(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+						</section>
+						<section id="history-info">
+							<hr>
+							<h6 class="text-muted">MEDICAL HISTORY</h6>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<strong>CURRENT MEDICATIONS</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.current_medications or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.current_medications(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>ALLERGIES</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.allergies or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.allergies(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>PREVIOUS HOSPITALIZATION</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.previous_hospitalization or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.previous_hospitalization(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>DEVELOPMENT ABNORMALITIES</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.abnormalities or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.abnormalities(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>HEALTH CONDITIONS</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.conditions or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.conditions(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>HAS REACTIONS</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ 'Yes' if patient.has_reactions else 'No' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.has_reactions(class='form-check profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>HAS ABNORMALITIES</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ 'Yes' if patient.has_problems else 'No' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.has_problems(class='form-check profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<strong>HAS FAMILY HISTORY</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ 'Yes' if patient.has_family_history else 'No' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.has_family_history(class='form-check profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<strong>REMARKS</strong>
+									<p class="text-muted ms-3 profile-field d-flex align-items-center">
+										<span>{{ patient.notes or 'Unspecified' }}</span>
+										<button type="button" class="btn btn-sm edit-button">
+											<i class="bi bi-pencil-fill"></i>
+										</button>
+										{{ form.notes(class='form-control form-control-sm profile-field-input') }}
+										<button type="button" class="btn btn-sm done-button">
+											<i class="bi bi-check-circle-fill text-success"></i>
+										</button>
+									</p>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 mb-4">
+				<div class="card shadow">
+					<div class="card-body profile-field">
+						<h4 class="card-title">Signature</h4>
+						<hr>
+						<button type="button" 
+								class="btn edit-signature-button"
+								data-bs-toggle="modal"
+								data-bs-target="#edit-signature-modal">
+							<i class="bi bi-pencil-fill"></i>
+						</button>
+						<div class="d-flex align-items-center">
+							<span class="text-center mt-2">
+								{% if patient.signature %}
+									<img id="signature-image"
+										class="mt-2" 
+										src="{{ url_for('dashboard.get_signature', patient_id=patient.unique_id, id=patient.signature) }}"
+										style="width: 60%">
+								{% else %}
+									No signature
+								{% endif %}
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<h4 class="text-center">The record for this patient has been deleted.</h4>
+	{% endif %}
+	
+	<div class="modal fade"
+		 id="edit-signature-modal"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="mb-0">Edit signature</h4>
+					<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<input type="file" id="signature-uploader">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade"
+		 id="deleteConfirm"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body">
+					<span id="delete-message">Are you sure?</span>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" id="unconfirm-delete" data-bs-dismiss="modal">No</button>
+					<button type="button" class="btn btn-danger" id="confirm-delete">Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade"
+		id="prescription"
+		tabindex="-1"
+		data-bs-backdrop="static"
+		data-bs-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content with-spinner">
+				<div class="spinner-wrapper">
+					<div class="spinner-overlay">
+						<div class="spinner-border" role="status"></div>
+					</div>
+				</div>
+				<div class="modal-header justify-content-between">
+					<h4 class="mb-0">Prescribe</h4>
+					<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<form
+					method="post"
+					class="modal-body needs-validation"
+					id="prescription-form">
+					<input type="hidden" name="unique_id" value="{{ patient.unique_id }}">
+					<div class="row mb-2 prescription-entry">
+						<div class="col-2">
+							<h1>Rx</h1>
+						</div>
+						{% include 'dashboard/sections/prescription_form.html' %}
+					</div>
+					<div class="row" id="newButtonSection">
+						<div class="col text-center">
+							{{ create_regular_button('Add', id='addMed', size='sm') }}
+						</div>
+					</div>
+				</form>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" id="prescribe-button">Prescribe</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="newDrugForm" style="display: none">
+		<div class="row mb-2 prescription-entry">
+			<hr>
+			<div class="col-2 text-center">
+				{{ create_regular_button('-', class='remove-form', size='sm', theme='danger') }}
+			</div>
+			{% include 'dashboard/sections/prescription_form.html' %}
+		</div>
+	</div>
+	{% include 'dashboard/sections/billing.html' %}
+	{% include 'dashboard/sections/schedule.html' %}
+    <div id="overlay">
+        <div class="d-flex align-items-center justify-content-center" style="height: 100%">
+            <div class="circ-loader"></div>
+        </div>
+    </div>
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto">Form validation error</strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+{% endblock %}
+{% block styles %}
+    {{ get_css('core.min', 'filepond') }}
+    {{ get_css('plugin-image-edit', 'filepond') }}
+    {{ get_css('plugin-image-preview', 'filepond') }}
+{% endblock %}
+{% block scripts %}
+	<script>sessionStorage.setItem('patient_unique_id', '{{ patient.unique_id }}')</script>
+	{{ get_js('masonry.pkgd.min') }}
+	{{ get_js('just-validate.min') }}
+	{{ get_js('flatpickr.min') }}
+	
+    {{ get_js('plugin-file-encode', 'filepond') }}
+    {{ get_js('plugin-file-rename', 'filepond') }}
+    {{ get_js('plugin-file-validate-size', 'filepond') }}
+    {{ get_js('plugin-file-validate-type', 'filepond') }}
+    {{ get_js('plugin-image-crop', 'filepond') }}
+    {{ get_js('plugin-image-edit', 'filepond') }}
+    {{ get_js('plugin-image-exif-orientation', 'filepond') }}
+    {{ get_js('plugin-image-preview', 'filepond') }}
+    {{ get_js('plugin-image-resize', 'filepond') }}
+    {{ get_js('plugin-image-transform', 'filepond') }}
+    {{ get_js('plugin-image-validate-size', 'filepond') }}
+    {{ get_js('core.min', 'filepond') }}
+	
+	{{ get_js('view_patient') }}
+{% endblock %}

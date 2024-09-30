@@ -1,0 +1,310 @@
+{% extends 'dashboard/_base.html' %}
+
+{% block contents %}
+    {% with active = 'accounts' %}
+        {% include 'dashboard/sections/patient_nav.html' %}
+    {% endwith %}
+    {% if accounts | length > 0 %}
+        <div class="row">
+            <div class="col">
+                Payments made<h5><span id="grand-total-payment">&#8369; {{ grand_total_pay | currency }}</span><h5>
+            </div>
+            <div class="col">
+                Outstanding balance<h5><span id="total-balance">&#8369; {{ total_balance | currency }}</span></h5>
+            </div>
+        </div>
+        <hr>
+        <input type="hidden" id="patient-id" value="{{ patient.unique_id }}">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Creation Date</th>
+                    <th>Last Payment Date</th>
+                    <th>Total Payment</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in accounts %}
+                    <tr class="account{% if account.status == 'Pending' %} pending{% else %} done{% endif %}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#account-modal">
+                        <td>
+                            <input type="hidden" class="account-guid" value="{{ account.guid }}">
+                            {{ account.guid | truncate(9) }}
+                        </td>
+                        <td>
+                            {{ moment(account.created_at).format('MMM D YYYY, h:mm A') }}</td>
+                        <td>{%if account.updated_at %}
+                            {{ moment(account.updated_at).format('MMM D YYYY, h:mm A') }}
+                            {% else %}-
+                            {% endif %}
+                        </td>
+                        <td>&#8369; {{ account.total_pay | currency }}</td>
+                        <td>&#8369; {{ account.balance | currency }}</td>
+                        <td>{{ account.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h4 class="text-center">No entries</h4>
+    {% endif %}
+    <!--  BILLING DETAILS MODAL  -->
+    <div class="modal fade"
+		id="account-modal"
+		tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content with-spinner">
+                <div class="spinner-wrapper">
+                    <div class="spinner-overlay">
+                        <div class="spinner-border" role="status"></div>
+                    </div>
+                </div>
+                <div class="modal-header justify-content-between">
+                    <h4 class="mb-0">Bill Details</h4>
+                    <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+				<div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <strong>Statement for: </strong><br>
+                                    <span id="statement-for"></span>
+                                </div>
+                                <div class="col">
+                                    <strong>Created at:</strong><br><span id="account-create-date"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <strong>Bill ID:</strong><br><span id="account-id"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <img id="bill-qr" style="width: 100%">
+                        </div>
+                    </div>
+                    <hr>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Procedure/Item</th>
+                                <th>Quantity</th>
+                                <th class="text-end">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="items-list">
+                        </tbody>
+                        <tfoot class="text-end">
+                            <tr>
+                                <td colspan="2">Subtotal:</td>
+                                <td id="bill-subtotal"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Discount:</td>
+                                <td id="bill-discount"></td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Total Due:</th>
+                                <th id="bill-due"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Total Payment:</th>
+                                <th id="bill-payment"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Balance:</th>
+                                <th id="bill-balance" class="text-danger"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div class="row" id="doctor-sign">
+                        <div class="col-6">
+                            <img src="{{ url_for('static', filename='img/marc_sign.png') }}" style="width: 100px;"><br>
+                            Dr. Marc S. Carandang<br>
+                            PRC: 48876<br>
+                            <img src="{{ url_for('static', filename='img/jacky_sign.jpg') }}" style="width: 100px;"><br>
+                            Dr. Jackelyn V. Carandang<br>
+                            PRC: 49251
+                        </div>
+                        <div class="col-5 d-flex justify-content-center align-items-end">
+                            <div class="d-block w-100 text-center">
+                                {% if patient.signature_svg %}
+                                    <img class="mb-2" src="{{ url_for('dashboard.get_signature', patient_id=patient.unique_id, id=patient.signature_svg) }}" style="width: 150px;"><br>
+                                {% endif %}
+                                <div style="border-bottom: 1px solid #0000005c; width: 100%"></div>
+                                <span>Patient's signature</span>
+                            </div>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+				</div>
+				<div class="modal-footer d-block">
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#payments-modal"
+                                    id="payment-history-btn">Payment History</button>
+                        </div>
+                        <div class="col text-end">
+                            <button type="button" class="btn btn-primary" id="print-btn">Print</button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-confirm">Delete</button>
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    id="settle-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#settle-modal">Settle</button>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+    </div>
+    <div class="modal fade"
+            id="settle-modal"
+            tabindex="-1"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content with-spinner">
+                <div class="spinner-wrapper">
+                    <div class="spinner-overlay">
+                        <div class="spinner-border" role="status"></div>
+                    </div>
+                </div>
+                <div class="modal-header justify-content-between">
+                    <h4 class="mb-0">Settle Bill</h4>
+                    <button type="button" class="ml-2 mb-1 btn-close" 
+                            aria-label="Close"
+                            data-bs-toggle="modal"
+                            data-bs-target="#account-modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="settle-form" novalidate="novalidate" autocomplete="off">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="payment" class="mb-1">Payment</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8369;</span>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="payment"
+                                           id="payment-field">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="balance" class="mb-1"><b>Balance</b></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8369;</span>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="balance"
+                                           id="balance-field"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="change" class="mb-1">Change</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&#8369;</span>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="change"
+                                           id="change-field"
+                                           readonly>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="mop" class="mb-1">Payment mode</label>
+                                <select class="form-select" name="mop" id="mop-field">
+                                    <option value="" selected disabled>Select</option>
+                                    <option>Cash</option>
+                                    <option>Gcash</option>
+                                    <option>Bank Transfer</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="confirm-btn">Settle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade"
+            id="payments-modal"
+            tabindex="-1"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content with-spinner">
+                <div class="spinner-wrapper">
+                    <div class="spinner-overlay">
+                        <div class="spinner-border" role="status"></div>
+                    </div>
+                </div>
+                <div class="modal-header justify-content-between">
+                    <h4 class="mb-0">Payments</h4>
+                    <button type="button" class="ml-2 mb-1 btn-close" 
+                            aria-label="Close"
+                            data-bs-toggle="modal"
+                            data-bs-target="#account-modal"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date & time</th>
+                                <th>Mode</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payments-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="modal fade" 
+		id="delete-confirm" 
+		tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+                <div class="modal-body">
+                    <span class="d-block text-danger">The payment history will also be deleted. Do you want to proceed?</span>
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-danger" id="delete-btn">Confirm</button>
+				</div>
+			</div>
+		</div>
+    </div>
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="pageToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto toast-title">Form validation error</strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+    <div id="main-spinner" class="spinner-wrapper">
+        <div class="spinner-overlay fixed">
+            <div class="spinner-border" role="status"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ get_js('just-validate.min') }}
+    {{ get_js('accounts') }}
+{% endblock %}

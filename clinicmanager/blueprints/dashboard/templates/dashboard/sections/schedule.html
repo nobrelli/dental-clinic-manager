@@ -1,0 +1,56 @@
+<div class="modal fade" 
+    id="scheduler-modal" 
+    tabindex="-1"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header justify-content-between">
+                <h4 class="mb-0 scheduler-heading">Schedule Appointment</h4>
+                <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post"
+                class="modal-body needs-validation with-spinner" 
+                id="schedule-form">
+                <input type="hidden" name="unique_id" value="{{ patient.unique_id }}">
+                <div class="spinner-wrapper">
+                    <div class="spinner-overlay">
+                        <div class="spinner-border" role="status"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md mb-2">
+                        <input class="flatpickr flatpickr-input form-control" 
+                            id="appointment-date" 
+                            type="date" 
+                            placeholder="Pick a date" 
+                            readonly
+                            name="appointment_date">
+                    </div>
+                    <div class="col-md mb-2 d-flex align-items-center">
+                        <button type="button" class="btn btn-primary btn-sm" id="specify-time">Specify time</button>
+                        <input class="flatpickr flatpickr-input form-control me-1" 
+                            id="appointment-time" 
+                            type="text" 
+                            placeholder="Select time" 
+                            readonly
+                            style="display: none"
+                            name="appointment_time">
+                        <button type="button" class="ml-2 mb-1 btn-close" id="unspecify-time" style="display: none"></button>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col">
+                        <div class="form-floating">
+                            <textarea class="form-control" name="remarks" placeholder="Remarks" id="remarks"></textarea>
+                            <label for="remarks">Reason for visit</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="save-appointment-btn" disabled>Save</button>
+            </div>
+        </div>
+    </div>
+</div>

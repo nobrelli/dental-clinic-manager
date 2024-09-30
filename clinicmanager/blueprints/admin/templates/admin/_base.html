@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+{% from 'admin/helpers.html' import get_css, get_js %}
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, 
+                                        initial-scale=1, 
+                                        minimum-scale=1, 
+                                        maximum-scale=1, 
+                                        user-scalable=no">
+        <title>{{ title }}</title>
+        {{ JSGlue.include() }}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <!-- {{ get_css('bootstrap.min', 'bootstrap') }} -->
+        {{ get_css('main') }}
+    </head>
+    <body class="login-page">
+        <noscript>
+            <div id="noscript-message">
+                Please enable Javascript to continue.
+            </div>
+        </noscript>
+        {% block contents %}{% endblock %}
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap.native@5.0.9/dist/bootstrap-native.min.js"></script>
+        <!-- {{ get_js('bootstrap-native.min', 'bootstrap-native') }} -->
+        {{ get_js('just-validate.min') }}
+        {{ get_js('main') }}
+        {{ get_js('admin') }}
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

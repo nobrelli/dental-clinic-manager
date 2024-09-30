@@ -1,0 +1,179 @@
+<div class="modal fade" 
+    id="billing" 
+    tabindex="-1"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content with-spinner">
+            <div class="spinner-wrapper">
+                <div class="spinner-overlay">
+                    <div class="spinner-border" role="status"></div>
+                </div>
+            </div>
+            <div class="modal-header justify-content-between">
+                <h4 class="mb-0">Billing</h4>
+                <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post"
+                class="modal-body needs-validation" 
+                id="billingForm">
+                <input type="hidden" name="patient_id" value="{{ patient.unique_id }}">
+                <div class="row mb-2">
+                    <div class="col">
+                        <select class="form-select" name="account_type">
+                            <option value="new" selected>New account</option>
+                            <option value="existing">Existing account</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <input class="form-control flatpickr flatpickr-input hidden" type="text" id="account-date" placeholder="Pick a date" readonly>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                    <div class="col">
+                        <h5 class="mb-0">Procedures</h5>
+                    </div>
+                    <div class="col text-end">
+                        <button class="btn btn-primary btn-sm add-field" type="button" data-template="procedure-field">Add field</button>
+                    </div>
+                </div>
+                <div id="procedureFields">
+                    <div class="procedure-field mb-2 row template" style="display: none !important">
+                        <div class="col-8 d-flex">
+                            <div class="dropdown w-100">
+                                <input class="form-control" type="text"
+                                       name="procedure"
+                                       placeholder="Procedure"
+                                       data-bs-toggle="dropdown" autocomplete="off">
+                                <ul class="dropdown-menu"></ul>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="input-group">
+                                <span class="input-group-text">&#8369;</span>
+                                <input class="form-control" name="price" type="text" value="0.00" required autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col d-flex">
+                            <i class="remove-field align-self-center justify-content-end" data-feather="x-circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                    <div class="col">
+                        <h5 class="mb-0">Items</h5>
+                    </div>
+                    <div class="col text-end">
+                        <button class="btn btn-primary btn-sm add-field" type="button" data-template="item-field">Add field</button>
+                    </div>
+                </div>
+                <div id="items">
+                    <div class="item-field mb-2 row template align-items-center" style="display: none !important">
+                        <div class="col-6">
+                            <select class="form-select" name="item">
+                                <option selected disabled value="">Add item</option>
+                                {% for product in products %}
+                                    <option value="{{ product.name }}" data-price="{{ '%0.2f' | format(product.price) }}">{{ product.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <input class="form-control" name="qty" type="number" value="1" min="1" placeholder="Qty" autocomplete="off">
+                        </div>
+                        <div class="col-3">
+                            <div class="input-group">
+                                <span class="input-group-text">&#8369;</span>
+                                <input class="form-control" name="price" type="text" value="0.00" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col d-flex">
+                            <i class="remove-field" data-feather="x-circle" data-template="item-field"></i>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mt-1 align-items-center text-end">
+                    <div class="col-4">
+                        <select class="form-select" name="mop" required>
+                            <option disabled selected value="">Payment mode</option>
+                            <option>Cash</option>
+                            <option>Gcash</option>
+                            <option>Bank Transfer</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <span>Subtotal</span>
+                    </div>
+                    <div class="col-3">
+                        <div class="input-group">
+                            <span class="input-group-text">&#8369;</span>
+                            <input class="form-control" name="subtotal" type="text" readonly value="0.00">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1 align-items-center text-end">
+                    <div class="col-8">
+                        <span>Discount</span>
+                    </div>
+                    <div class="col-3">
+                        <div class="input-group">
+                            <span class="input-group-text">&#8369;</span>
+                            <input class="form-control" name="discount" type="text" placeholder="0.00" value="0.00" disabled autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1 align-items-center text-end">
+                    <div class="col-8">
+                        <strong>Total Due</strong>
+                    </div>
+                    <div class="col-3">
+                        <div class="input-group">
+                            <span class="input-group-text">&#8369;</span>
+                            <input class="form-control" name="total" type="text" readonly value="0.00">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row align-items-center text-end">
+                    <div class="col-8">
+                        <span>Payment</span>
+                    </div>
+                    <div class="col-3">
+                        <div class="input-group">
+                            <span class="input-group-text">&#8369;</span>
+                            <input class="form-control" name="payment" type="text" value="0.00" required disabled autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1 align-items-center text-end">
+                    <div class="col-8">
+                        <span>Change</span>
+                    </div>
+                    <div class="col-3">
+                        <div class="input-group">
+                            <span class="input-group-text">&#8369;</span>
+                            <input class="form-control" name="change" type="text" value="0.00" readonly required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1 align-items-center text-end">
+                    <div class="col-8">
+                        <span>Balance</span>
+                    </div>
+                    <div class="col-3">
+                        <div class="input-group">
+                            <span class="input-group-text">&#8369;</span>
+                            <input class="form-control" name="balance" type="text" value="0.00" readonly required>
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" class="submit-btn" hidden>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="billButton" disabled>Settle</button>
+            </div>
+        </div>
+    </div>
+</div>

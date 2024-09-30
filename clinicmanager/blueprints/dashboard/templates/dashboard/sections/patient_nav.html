@@ -1,0 +1,25 @@
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+        <a class="nav-link {% if active == 'profile' %}active{% endif %}" href="{{ url_for('dashboard.view_patient', id=patient.unique_id) }}">Profile</a>
+    </li>
+    {% if patient.patient_type == 'ortho' %}
+    <li class="nav-item">
+        <a class="nav-link {% if active == 'ortho' %}active{% endif %}" href="{{ url_for('dashboard.view_ortho', id=patient.unique_id) }}">Ortho</a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+        <a class="nav-link {% if active == 'teeth' %}active{% endif %}" href="{{ url_for('dashboard.view_chart', id=patient.unique_id) }}">Chart</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if active == 'prescription' %}active{% endif %}" href="{{ url_for('dashboard.view_prescriptions', id=patient.unique_id) }}">Prescriptions</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if active == 'accounts' %}active{% endif %}" href="{{ url_for('dashboard.view_accounts', id=patient.unique_id) }}">Accounts</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if active == 'appointments' %}active{% endif %}" href="{{ url_for('dashboard.view_appointments', id=patient.unique_id) }}">Appointments</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if active == 'gallery' %}active{% endif %}" href="{{ url_for('dashboard.view_gallery', id=patient.unique_id) }}">Gallery</a>
+    </li>
+</ul>

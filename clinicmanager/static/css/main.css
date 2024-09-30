@@ -1,0 +1,413 @@
+@font-face {
+    font-family: Ubuntu;
+    src: url('/static/fonts/Ubuntu/Ubuntu-Bold.ttf');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: Ubuntu;
+    src: url('/static/fonts/Ubuntu/Ubuntu-BoldItalic.ttf');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Ubuntu;
+    src: url('/static/fonts/Ubuntu/Ubuntu-Italic.ttf');
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Ubuntu;
+    src: url('/static/fonts/Ubuntu/Ubuntu-Light.ttf');
+    font-weight: lighter;
+}
+
+@font-face {
+    font-family: Ubuntu;
+    src: url('/static/fonts/Ubuntu/Ubuntu-LightItalic.ttf');
+    font-weight: lighter;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Ubuntu;
+    src: url('/static/fonts/Ubuntu/Ubuntu-Medium.ttf');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Ubuntu;
+    src: url('/static/fonts/Ubuntu/Ubuntu-MediumItalic.ttf');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Ubuntu;
+    src: url('/static/fonts/Ubuntu/Ubuntu-Regular.ttf');
+}
+
+* {
+   font-family: Ubuntu;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+html, body.login-page {
+    height: 100%;
+}
+
+#noscript-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background-color: #585858;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.form-message {
+    display: none;
+}
+
+.login-page {
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(51deg, rgba(255,255,255,1) 0%, rgba(215,215,255,1) 45%, rgba(107,179,255,1) 69%, rgba(0,212,255,1) 100%);
+    background: -webkit-linear-gradient(51deg, rgba(255,255,255,1) 0%, rgba(215,215,255,1) 45%, rgba(107,179,255,1) 69%, rgba(0,212,255,1) 100%);
+    background: linear-gradient(51deg, rgba(255,255,255,1) 0%, rgba(215,215,255,1) 45%, rgba(107,179,255,1) 69%, rgba(0,212,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#00d4ff",GradientType=1);
+}
+
+#signature {
+    display: none;
+}
+
+#signature-pad {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+}
+
+.bi {
+    display: inline-block;
+    vertical-align: -.125em;
+    fill: currentcolor
+}
+
+/* Fix: https://github.com/twbs/bootstrap/issues/33871 */
+.form-floating > label {
+    z-index: 9;
+}
+
+.marked {
+    padding: 0;
+    border-radius: 30%;
+    background-color: #ffe697;
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background-color: #ffffffd9;
+}
+
+#overlay .circ-loader {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    background-color: #d169ff;
+}
+
+.remove-field  {
+    cursor: pointer;
+    color: #e26868;
+    width: 18px;
+    height: 18px;
+}
+
+#billingForm [name="price"],
+#billingForm [name="discount"],
+#billingForm [name="total"],
+#billingForm [name="payment"],
+#billingForm [name="change"],
+#billingForm [name="subtotal"],
+#billingForm [name="balance"]{
+    text-align: right;
+}
+
+[name="change"], [name="balance"] {
+    color: #aa2935;
+}
+
+[name="balance"] {
+    font-weight: bold;
+}
+
+[name="total"] {
+    color: #0b5dd5;
+    font-weight: bold;
+}
+
+.just-validate-error-label {
+    display: none;
+}
+
+.account {
+    cursor: pointer;
+}
+
+.account.done,
+.appointment.done {
+    background-color: #99fcce;
+}
+
+.account.pending {
+    background-color: #ffe4b4;
+}
+
+/* .modal-message {
+    display: none;
+} */
+
+#account-modal ul > li {
+    list-style-type: none;
+}
+
+#account_due {
+    color: #0b5dd5;
+}
+
+#account_payment {
+    border: none;
+    text-align: right;
+    width: 100%;
+}
+
+#account_balance {
+    color: #aa2935;
+}
+
+.with-spinner {
+    position: relative;
+}
+
+.spinner-wrapper {
+    display: none;
+}
+
+.spinner-overlay.fixed {
+    position: fixed !important;
+}
+
+.spinner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    background-color: #ffffff8f;
+}
+
+.modal {
+    background-color: #ffffffc4;
+}
+
+#account-modal table {
+    margin: 0;
+}
+
+#account-modal tfoot td,
+#account-modal tfoot th {
+    border: none;
+}
+
+#doctor-sign {
+    display: none;
+}
+
+.appointment.done.completed {
+    opacity: 0.5;
+}
+
+#qr-reader-status {
+    font-weight: bold;
+    font-size: 22px;
+    margin: 0;
+}
+
+#record-link {
+    margin-bottom: 15px;
+}
+
+.filepond--credits,
+img[alt="Info icon"] {
+    display: none;
+}
+
+.filepond--item {
+    width: calc(33.33% - 0.5em);
+}
+
+#gallery .delete-button {
+    position: absolute;
+    right: 15px;
+    top: 3px;
+    background-color: #fff;
+    opacity: 0;
+    transition: all 200ms ease-in-out;
+}
+
+#gallery .gallery-image > img {
+    cursor: pointer;
+}
+
+#gallery .gallery-image:hover > .delete-button {
+    opacity: 1;
+}
+
+.toast-container {
+    z-index: 9999999999;
+}
+
+#clinic-calendar a {
+    text-decoration: none;
+    color: black;
+}
+
+#minors-section {
+    display: none;
+}
+
+.enye-append {
+    cursor: pointer; 
+    text-decoration:none
+}
+
+.edit-button,
+.edit-signature-button {
+    opacity: 0;
+    transition: 200ms ease-out;
+}
+
+.profile-field:hover > .edit-button,
+.profile-field:hover > .edit-signature-button {
+    opacity: 1;
+}
+
+.done-button, .profile-field-input {
+    display: none;
+}
+
+#patient-search {
+    position: relative;
+}
+
+#patient-finder {
+    position: relative;
+    z-index: 1;
+}
+
+.results-wrapper {
+    position: relative;
+}
+
+#search-results {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    background-color: #dcdcdc;
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    border-radius: 6px;
+    z-index: 999;
+}
+
+#search-results > li {
+    padding: 10px 10px;
+    border-top: 1px solid #c6c6c6;
+    transition: 200ms ease-out;
+    cursor: pointer;
+}
+
+#search-results > li:hover {
+    background-color: #cdcdcd;
+}
+
+#search-results > li > a {
+    text-transform: uppercase;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #000;
+}
+
+.separator:not(:empty)::before {
+    margin-right: .25em;
+}
+
+.separator:not(:empty)::after {
+    margin-left: .25em;
+}
+
+.for-minors {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+@media print
+{
+    #prescription
+    {
+        height: auto;
+    }
+
+    .modal-content
+    {
+        border: none;
+        box-shadow: none;
+    }
+    
+    #payment-history-btn, #settle-btn, #print-btn, #confirm-btn {
+        display: none !important;
+    }
+    
+    #doctor-sign {
+        display: flex;
+    }
+    
+    [data-bs-target="#delete-confirm"] {
+        display: none;
+    }
+}

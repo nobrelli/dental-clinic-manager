@@ -1,0 +1,435 @@
+{% extends 'dashboard/_base.html' %}
+
+{% block contents %}
+    <h3>Case Details</h3>
+    <hr>
+    <section class="accordion" id="new-ortho-form">
+        <form method="post" id="ortho-form" novalidate enctype="multipart/form-data">
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#general-info">
+                        General Info
+                    </button>
+                </h3>
+                <div id="general-info" class="accordion-collapse collapse show"
+                    data-bs-parent="#new-ortho-form">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                {{ form.has_past_ortho.label(class='form-label') }}
+                                {{ form.has_past_ortho(class='form-select') }}
+                            </div>
+                            <div class="col-3">
+                                {{ form.has_nasorespiratory.label(class='form-label') }}
+                                {{ form.has_nasorespiratory(class='form-select') }}
+                            </div>
+                            <div class="col-3">
+                                {{ form.has_tonsilitis.label(class='form-label') }}
+                                {{ form.has_tonsilitis(class='form-select') }}
+                            </div>
+                            <div class="col-3">
+                                {{ form.has_allergy.label(class='form-label') }}
+                                {{ form.has_allergy(class='form-select') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{ form.other_problems.label(class='form-label') }}
+                                {{ form.other_problems(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#facial-features">
+                        Facial Features
+                    </button>
+                </h3>
+                <div id="facial-features" class="accordion-collapse collapse"
+                    data-bs-parent="#new-ortho-form">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.posture_at_rest.label(class='form-label') }}
+                                {{ form.posture_at_rest(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.upper_lip.label(class='form-label') }}
+                                {{ form.upper_lip(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.lower_lip.label(class='form-label') }}
+                                {{ form.lower_lip(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.soft_tissue_profile.label(class='form-label') }}
+                                {{ form.soft_tissue_profile(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.breathing_pattern.label(class='form-label') }}
+                                {{ form.breathing_pattern(class='form-select') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#intra-oral-features">
+                        Intra-Oral Features
+                    </button>
+                </h3>
+                <div id="intra-oral-features" class="accordion-collapse collapse"
+                    data-bs-parent="#new-ortho-form">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.gingiva.label(class='form-label') }}
+                                {{ form.gingiva(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.tonsils.label(class='form-label') }}
+                                {{ form.tonsils(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.adenoids.label(class='form-label') }}
+                                {{ form.adenoids(class='form-select') }}
+                            </div>
+                        </div>
+                        <hr>
+                        <h6>Tongue Action</h6>
+                        <hr>
+                        <div class="row mb-3 ms-2">
+                            <div class="col">
+                                {{ form.extent_mobility.label(class='form-label') }}
+                                {{ form.extent_mobility(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.postural_position.label(class='form-label') }}
+                                {{ form.postural_position(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.position_speech.label(class='form-label') }}
+                                {{ form.position_speech(class='form-select') }}
+                            </div>
+                        </div>
+                        <hr>
+                        <h6>Swallowing</h6>
+                        <hr>
+                        <div class="row mb-3 ms-2">
+                            <div class="col">
+                                {{ form.unconscious.label(class='form-label') }}
+                                {{ form.unconscious(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.command.label(class='form-label') }}
+                                {{ form.command(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.water.label(class='form-label') }}
+                                {{ form.water(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.masticatory.label(class='form-label') }}
+                                {{ form.masticatory(class='form-select') }}
+                            </div>
+                        </div>
+                        <div class="row ms-2">
+                            <div class="col">
+                                {{ form.swallowing_notes.label(class='form-label') }}
+                                {{ form.swallowing_notes(class='form-control') }}
+                            </div>
+                        </div>
+                        <hr>
+                        <h6>Habits</h6>
+                        <hr>
+                        <div class="row mb-3 ms-2">
+                            <div class="col">
+                                {{ form.digital_habit.label(class='form-label') }}
+                                {{ form.digital_habit(class='form-control') }}
+                            </div>
+                            <div class="col">
+                                {{ form.bruxism.label(class='form-label') }}
+                                {{ form.bruxism(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3 ms-2">
+                            <div class="col">
+                                {{ form.occurrence.label(class='form-label') }}
+                                {{ form.occurrence(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.continuous.label(class='form-label') }}
+                                {{ form.continuous(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.night_only.label(class='form-label') }}
+                                {{ form.night_only(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.tension_only.label(class='form-label') }}
+                                {{ form.tension_only(class='form-select') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3 ms-2">
+                            <div class="col-4">
+                                {{ form.correction_attempt.label(class='form-label') }}
+                                {{ form.correction_attempt(class='form-select') }}
+                            </div>
+                        </div>
+                        <div class="row ms-2">
+                            <div class="col">
+                                {{ form.habit_notes.label(class='form-label') }}
+                                {{ form.habit_notes(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#definitions">
+                        Definitions and Occlusion
+                    </button>
+                </h3>
+                <div id="definitions" class="accordion-collapse collapse"
+                    data-bs-parent="#new-ortho-form">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.supernumerary_teeth.label(class='form-label') }}
+                                {{ form.supernumerary_teeth(class='form-control') }}
+                            </div>
+                            <div class="col">
+                                {{ form.missing_teeth.label(class='form-label') }}
+                                {{ form.missing_teeth(class='form-control') }}
+                            </div>
+                            <div class="col">
+                                {{ form.malformed_impacted.label(class='form-label') }}
+                                {{ form.malformed_impacted(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                {{ form.delayed_development.label(class='form-label') }}
+                                {{ form.delayed_development(class='form-control') }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.eruptions_sequence.label(class='form-label') }}
+                                {{ form.eruptions_sequence(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.maxillary_arch_form.label(class='form-label') }}
+                                {{ form.maxillary_arch_form(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.mandibular_arch_form.label(class='form-label') }}
+                                {{ form.mandibular_arch_form(class='form-select') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.molar_relationship.label(class='form-label') }}
+                                {{ form.molar_relationship(class='form-select') }}
+                            </div>
+                            <div class="col">
+                                {{ form.cuspid_relationship.label(class='form-label') }}
+                                {{ form.cuspid_relationship(class='form-select') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3 ms-2">
+                            <div class="col">
+                                {{ form.overjet.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.overjet(class='form-control') }}
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                {{ form.overbite.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.overbite(class='form-control') }}
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                {{ form.openbite.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.openbite(class='form-control') }}
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <h6>Midlines</h6>
+                        <hr>
+                        <div class="row mb-3 ms-2">
+                            <div class="col">
+                                {{ form.together.label(class='form-label') }}
+                                {{ form.together(class='form-select') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3 ms-2">
+                            <div class="col">
+                                {{ form.lower1.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.lower1(class='form-control') }}
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                {{ form.to_right.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.to_right(class='form-control') }}
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3 ms-2">
+                            <div class="col">
+                                {{ form.lower2.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.lower2(class='form-control') }}
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                {{ form.to_left.label(class='form-label') }}
+                                <div class="input-group">
+                                    {{ form.to_left(class='form-control') }}
+                                    <span class="input-group-text">mm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.arch_asymmetry.label(class='form-label') }}
+                                {{ form.arch_asymmetry(class='form-control') }}
+                            </div>
+                            <div class="col">
+                                {{ form.teeth_displaced.label(class='form-label') }}
+                                {{ form.teeth_displaced(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{ form.concerns.label(class='form-label') }}
+                                {{ form.concerns(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#treatment-contract">
+                        Treatment Contract
+                    </button>
+                </h3>
+                <div id="treatment-contract" class="accordion-collapse collapse"
+                    data-bs-parent="#new-ortho-form">
+                    <div class="accordion-body">
+                        <p>It is further agreed that the cost of the treatment totals to</p>
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.with_retainer.label(class='form-label') }}
+                                {{ form.with_retainer(class='form-control') }}
+                            </div>
+                            <div class="col">
+                                {{ form.without_retainer.label(class='form-label') }}
+                                {{ form.without_retainer(class='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                {{ form.parent_name.label(class='form-label') }}
+                                {{ form.parent_name(class='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse"
+                            data-bs-target="#signatures">
+                        Signatures
+                    </button>
+                </h3>
+                <div id="signatures" class="accordion-collapse collapse"
+                    data-bs-parent="#new-ortho-form">
+                    <div class="accordion-body">
+                        <label class="form-label">Patient's signature</label>
+                        <input type="file" id="patient-signature">
+                        <label class="form-label">Parent's signature</label>
+                        <input type="file" id="parent-signature">
+                    </div>
+                </div>
+            </div>-->
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary mt-4" id="submit" value="Submit">
+            </div>
+        </form>
+    </section>
+    
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto"></strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+    <div class="spinner-wrapper">
+        <div class="spinner-overlay fixed">
+            <div class="spinner-border" role="status"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block styles %}
+    {{ get_css('core.min', 'filepond') }}
+    {{ get_css('plugin-image-edit', 'filepond') }}
+    {{ get_css('plugin-image-preview', 'filepond') }}
+{% endblock %}
+{% block scripts %}
+    {{ get_js('just-validate.min') }}
+
+    {{ get_js('plugin-file-encode', 'filepond') }}
+    {{ get_js('plugin-file-rename', 'filepond') }}
+    {{ get_js('plugin-file-validate-size', 'filepond') }}
+    {{ get_js('plugin-file-validate-type', 'filepond') }}
+    {{ get_js('plugin-image-crop', 'filepond') }}
+    {{ get_js('plugin-image-edit', 'filepond') }}
+    {{ get_js('plugin-image-exif-orientation', 'filepond') }}
+    {{ get_js('plugin-image-preview', 'filepond') }}
+    {{ get_js('plugin-image-resize', 'filepond') }}
+    {{ get_js('plugin-image-transform', 'filepond') }}
+    {{ get_js('plugin-image-validate-size', 'filepond') }}
+    {{ get_js('core.min', 'filepond') }}
+    
+    {{ get_js('ortho') }}
+    <script>Ortho.fillup()</script>
+{% endblock %}

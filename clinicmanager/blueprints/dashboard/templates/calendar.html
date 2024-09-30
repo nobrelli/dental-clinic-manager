@@ -1,0 +1,99 @@
+{% extends 'dashboard/_base.html' %}
+
+{% block contents %}
+    <div id="clinic-calendar"></div>
+    <div class="modal fade" 
+        id="event-modal" 
+        tabindex="-1"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-between">
+                    <h4 class="mb-0 scheduler-heading">Appointment Details</h4>
+                    <button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="patient-id">
+                    <input type="hidden" id="appointment-id">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <strong>Patient name</strong>
+                        </div>
+                        <div class="col">
+                            <p class="mb-0" id="patient-name"></p>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <strong>Scheduled date</strong>
+                        </div>
+                        <div class="col">
+                            <p class="mb-0" id="scheduled-date"></p>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <strong>Scheduled time</strong>
+                        </div>
+                        <div class="col">
+                            <p class="mb-0" id="scheduled-time"></p>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <strong>Reason for visit</strong>
+                        </div>
+                        <div class="col">
+                            <p class="mb-0" id="reason"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="toast-container position-fixed bottom-0 start-0 p-3">
+		<div id="formMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto">Form validation error</strong>
+				<button type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+{% endblock %}
+{% block scripts %}
+	{{ get_js('fullcalendar.min') }}
+    <script>
+        const modalInstance = new BSN.Modal(RDC.getById('event-modal'));
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            const element = RDC.getById('clinic-calendar');
+            const calendar = new FullCalendar.Calendar(element, {
+                initialView: 'dayGridMonth',
+                events: Flask.url_for('dashboard.get_events'),
+                selectable: true,
+                weekNumbers: true,
+                expandRows: true,
+                timeZone: 'local',
+                eventClick: info => {
+                    info.jsEvent.preventDefault();
+                    modalInstance.show();
+                    
+                    const event = info.event;
+                    const isNow = moment(event.start).isSame(moment(), 'day') ? ' (now)' : '';
+                    const date = moment(event.start).format('MMMM DD, YYYY') + isNow;
+                    const dateTime = new Date(date + ' ' + event.extendedProps.startTime);
+                    
+                    RDC.setText(RDC.getById('patient-name'), event.title);
+                    RDC.setText(RDC.getById('scheduled-date'), date);
+                    RDC.setText(RDC.getById('scheduled-time'), moment(dateTime).format('h:mm A'));
+                    RDC.setText(RDC.getById('reason'), event.extendedProps.remarks);
+                    RDC.setValue(RDC.getById('patient-id'), event.extendedProps.patient_id);
+                    RDC.setValue(RDC.getById('appointment-id'), event.extendedProps.id);
+                }
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'dashboard/_base.html' %}
+{% from 'dashboard/helpers.html' import render_info %}
+{% from 'dashboard/widgets/buttons.html' import create_modal_open_button, create_regular_button %}
+
+{% block contents %}
+        {% with active = 'prescription' %}
+            {% include 'dashboard/sections/patient_nav.html' %}
+        {% endwith %}
+        {% if not prescriptions.count() %}
+            <h4 class="text-center">No entries</h4>
+        {% else %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Entry ID</th>
+                        <th>Prescription Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prescription in prescriptions %}
+                        <tr>
+                            <td>{{ prescription.id }}</td>
+                            <td>{{ moment(prescription.prescribed_at).format('MMM D, YYYY, h:mm A') }}</td>
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown">Actions</a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item"
+                                            href="#prescription"
+                                            data-bs-toggle="modal"
+                                            data-id="{{ patient.unique_id }}"
+                                            data-prescription-id="{{ prescription.image }}"
+                                            onclick="viewPrescription(this)">View</a></li>
+                                        <li><a class="dropdown-item"
+                                            href="#prescription"
+                                            data-bs-toggle="modal"
+                                            data-prescription-id="{{ prescription.image }}"
+                                            onclick="deletePrescription(this)">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    <div class="modal fade"
+		id="prescription" 
+		tabindex="-1" >
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body">
+                    <div>
+                        <span id="modalMessage"></span>
+                    </div>
+                    <div id="prescriptionImage"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="printBtn">Print</button>
+                    <button type="button" class="btn btn-danger" id="confirmBtn">Confirm</button>
+				</div>
+			</div>
+		</div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        const message = document.getElementById('modalMessage');
+        const imageContainer = document.getElementById('prescriptionImage');
+        const confirm = document.getElementById('confirmBtn');
+        const printBtn = document.getElementById('printBtn');
+
+        const viewPrescription = element =>
+        {
+            show(imageContainer);
+            show(printBtn);
+            hide(confirm);
+
+            const params = {
+                patient_id: '{{ patient.unique_id }}',
+                id: element.getAttribute('data-prescription-id')
+            };
+
+            const image = document.createElement('img');
+            image.src = Flask.url_for('dashboard.get_prescription_image', params);
+            image.style.width = '100%';
+            imageContainer.appendChild(image);
+        }
+
+        const deletePrescription = element =>
+        {
+            setErrorMsg(message, 'Are you sure to delete this?');
+            hide(imageContainer);
+            hide(printBtn);
+            show(confirm);
+            confirm.setAttribute('data-prescription-id', element.getAttribute('data-prescription-id'));
+        }
+
+        confirm.onclick = () =>
+        {
+            const url = Flask.url_for('dashboard.delete_prescription');
+
+            postData(confirm, message, url, {
+                'prescription_id': confirm.getAttribute('data-prescription-id')
+            });
+        }
+
+        printBtn.onclick = () =>
+        {
+            print();
+        }
+    </script>
+{% endblock %}

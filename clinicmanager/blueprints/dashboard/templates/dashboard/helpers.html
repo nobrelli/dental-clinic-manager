@@ -1,0 +1,19 @@
+{% macro render_info(info) %}
+	{{ info | default('-', true) | replace('None', '') }}
+{% endmacro %}
+
+{% macro get_css(filename, subdir='') %}
+	{% if subdir %}
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/' + subdir + '/' + filename + '.css') }}">
+	{% else %}
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/' + filename + '.css') }}">
+	{% endif %}
+{% endmacro %}
+
+{% macro get_js(filename, subdir='') %}
+	{% if subdir %}
+		<script src="{{ url_for('static', filename='js/' + subdir + '/' + filename + '.js') }}"></script>
+	{% else %}
+		<script src="{{ url_for('static', filename='js/' + filename + '.js') }}"></script>
+	{% endif %}
+{% endmacro %}
