@@ -1,4 +1,4 @@
-# Patient Manager
+# Dental Clinic Patient Manager
 
 This is the patient manager web app I made a year ago for a dental clinic I worked in.
 
